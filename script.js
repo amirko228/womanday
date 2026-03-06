@@ -67,12 +67,35 @@ document.addEventListener('DOMContentLoaded', () => {
   function initMainPage() {
     createPetals();
     createDecoFlowers();
+    createLoveHeart();
     animateGreeting();
     animateFlowers();
     initScrollAnimations();
     initCongratsButton();
     initInteractivity();
     initParallax();
+  }
+
+  // Сердце из текста «Я люблю тебя»
+  function createLoveHeart() {
+    const container = document.getElementById('love-heart');
+    if (!container) return;
+    const phrase = 'Я люблю тебя ';
+    const count = 24;
+    for (let i = 0; i < count; i++) {
+      const t = (i / count) * Math.PI * 2;
+      const x = 16 * Math.pow(Math.sin(t), 3);
+      const y = -(13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) - Math.cos(4 * t));
+      const angle = (Math.atan2(13 * Math.sin(t) + 10 * Math.sin(2 * t) + 6 * Math.sin(3 * t) + 4 * Math.sin(4 * t), -48 * Math.pow(Math.sin(t), 2) * Math.cos(t)) * 180 / Math.PI) - 90;
+      const span = document.createElement('span');
+      span.className = 'love-word';
+      span.style.setProperty('--i', i);
+      span.style.left = (50 + x * 2.2) + '%';
+      span.style.top = (50 + y * 2.2) + '%';
+      span.style.transform = `translate(-50%, -50%) rotate(${angle}deg)`;
+      span.textContent = phrase;
+      container.appendChild(span);
+    }
   }
 
   // Падающие лепестки
