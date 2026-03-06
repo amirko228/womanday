@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>С 8 марта!</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css?v=3">
+</head>
+<body>
+  <!-- ЭКРАН КОНВЕРТА — как в блоке «Наша история» -->
+  <div id="card-screen" class="card-screen">
+    <div class="card-bg-pattern"></div>
+    <h1 class="card-greeting">С 8 марта!</h1>
+    <p class="card-hint">
+      <span class="card-hint-arrow">↑</span>
+      Нажми, чтобы открыть
+    </p>
+    <div id="greeting-card" class="card-envelope">
+      <div class="card-env-wrapper">
+        <div class="card-env-body">
+          <div class="card-env-pocket">
+            <div class="card-env-letter">
+              <span class="envelope-sub">Открой меня</span>
+            </div>
+          </div>
+        </div>
+        <div class="card-env-flap"></div>
+      </div>
+    </div>
+    <div id="card-hearts" class="card-hearts"></div>
+  </div>
+
+  <!-- ГЛАВНАЯ -->
+  <main id="main-content" class="main-content hidden">
+    <div id="petals" class="petals"></div>
+    <div class="deco-flowers" id="deco-flowers"></div>
+
+    <!-- HERO -->
+    <section class="hero">
+      <div class="hero-bg"></div>
+      <div class="hero-side-deco hero-side-deco--left">
+        <svg class="hero-side-flower" viewBox="0 0 120 200">
+          <defs><linearGradient id="side-stem" x1="0%" y1="100%" x2="0%" y2="0%"><stop offset="0%" stop-color="#3d6b3d"/><stop offset="100%" stop-color="#5a8f5a"/></linearGradient><linearGradient id="side-petal" x1="0%" y1="100%" x2="0%" y2="0%"><stop offset="0%" stop-color="#ea80b0"/><stop offset="100%" stop-color="#f5c4d8"/></linearGradient></defs>
+          <path d="M60 185 Q58 140 60 95 Q62 50 60 15" stroke="url(#side-stem)" stroke-width="4" fill="none"/>
+          <ellipse cx="28" cy="85" rx="12" ry="18" fill="#4a7c4a" transform="rotate(-22 28 85)"/>
+          <ellipse cx="92" cy="105" rx="11" ry="16" fill="#4a7c4a" transform="rotate(18 92 105)"/>
+          <g transform="translate(60,15)"><ellipse cx="0" cy="-14" rx="10" ry="14" fill="url(#side-petal)" transform="rotate(0)"/><ellipse cx="0" cy="-14" rx="10" ry="14" fill="url(#side-petal)" transform="rotate(60)"/><ellipse cx="0" cy="-14" rx="10" ry="14" fill="url(#side-petal)" transform="rotate(120)"/><ellipse cx="0" cy="-14" rx="10" ry="14" fill="url(#side-petal)" transform="rotate(180)"/><ellipse cx="0" cy="-14" rx="10" ry="14" fill="url(#side-petal)" transform="rotate(240)"/><ellipse cx="0" cy="-14" rx="10" ry="14" fill="url(#side-petal)" transform="rotate(300)"/><circle cx="0" cy="0" r="5" fill="#fce4ec"/></g>
+        </svg>
+        <svg class="hero-side-small" viewBox="0 0 60 80">
+          <defs><linearGradient id="side-small" x1="0%" y1="100%" x2="0%" y2="0%"><stop offset="0%" stop-color="#ea80b0"/><stop offset="100%" stop-color="#fce4ec"/></linearGradient></defs>
+          <circle cx="30" cy="55" r="5" fill="#fce4ec"/><ellipse cx="30" cy="38" rx="8" ry="11" fill="url(#side-small)" transform="rotate(0 30 55)"/><ellipse cx="30" cy="38" rx="8" ry="11" fill="url(#side-small)" transform="rotate(60 30 55)"/><ellipse cx="30" cy="38" rx="8" ry="11" fill="url(#side-small)" transform="rotate(120 30 55)"/><ellipse cx="30" cy="38" rx="8" ry="11" fill="url(#side-small)" transform="rotate(180 30 55)"/><ellipse cx="30" cy="38" rx="8" ry="11" fill="url(#side-small)" transform="rotate(240 30 55)"/><ellipse cx="30" cy="38" rx="8" ry="11" fill="url(#side-small)" transform="rotate(300 30 55)"/><path d="M30 70 L30 85" stroke="#5a8f5a" stroke-width="2" fill="none"/>
+        </svg>
+      </div>
+      <div class="hero-side-deco hero-side-deco--right">
+        <svg class="hero-side-flower" viewBox="0 0 120 200">
+          <defs><linearGradient id="side-stem-r" x1="0%" y1="100%" x2="0%" y2="0%"><stop offset="0%" stop-color="#3d6b3d"/><stop offset="100%" stop-color="#5a8f5a"/></linearGradient><linearGradient id="side-petal-r" x1="0%" y1="100%" x2="0%" y2="0%"><stop offset="0%" stop-color="#ea80b0"/><stop offset="100%" stop-color="#f5c4d8"/></linearGradient></defs>
+          <path d="M60 185 Q62 138 60 92 Q58 48 60 15" stroke="url(#side-stem-r)" stroke-width="4" fill="none"/>
+          <ellipse cx="92" cy="82" rx="12" ry="18" fill="#4a7c4a" transform="rotate(22 92 82)"/>
+          <ellipse cx="28" cy="102" rx="11" ry="16" fill="#4a7c4a" transform="rotate(-18 28 102)"/>
+          <g transform="translate(60,15)"><ellipse cx="0" cy="-14" rx="10" ry="14" fill="url(#side-petal-r)" transform="rotate(0)"/><ellipse cx="0" cy="-14" rx="10" ry="14" fill="url(#side-petal-r)" transform="rotate(60)"/><ellipse cx="0" cy="-14" rx="10" ry="14" fill="url(#side-petal-r)" transform="rotate(120)"/><ellipse cx="0" cy="-14" rx="10" ry="14" fill="url(#side-petal-r)" transform="rotate(180)"/><ellipse cx="0" cy="-14" rx="10" ry="14" fill="url(#side-petal-r)" transform="rotate(240)"/><ellipse cx="0" cy="-14" rx="10" ry="14" fill="url(#side-petal-r)" transform="rotate(300)"/><circle cx="0" cy="0" r="5" fill="#fce4ec"/></g>
+        </svg>
+        <svg class="hero-side-small" viewBox="0 0 60 80">
+          <defs><linearGradient id="side-small-r" x1="0%" y1="100%" x2="0%" y2="0%"><stop offset="0%" stop-color="#ea80b0"/><stop offset="100%" stop-color="#fce4ec"/></linearGradient></defs>
+          <circle cx="30" cy="55" r="5" fill="#fce4ec"/><ellipse cx="30" cy="38" rx="8" ry="11" fill="url(#side-small-r)" transform="rotate(0 30 55)"/><ellipse cx="30" cy="38" rx="8" ry="11" fill="url(#side-small-r)" transform="rotate(60 30 55)"/><ellipse cx="30" cy="38" rx="8" ry="11" fill="url(#side-small-r)" transform="rotate(120 30 55)"/><ellipse cx="30" cy="38" rx="8" ry="11" fill="url(#side-small-r)" transform="rotate(180 30 55)"/><ellipse cx="30" cy="38" rx="8" ry="11" fill="url(#side-small-r)" transform="rotate(240 30 55)"/><ellipse cx="30" cy="38" rx="8" ry="11" fill="url(#side-small-r)" transform="rotate(300 30 55)"/><path d="M30 70 L30 85" stroke="#5a8f5a" stroke-width="2" fill="none"/>
+        </svg>
+      </div>
+        <div class="hero-content" data-click-hero>
+        <h1 id="drawn-greeting" class="drawn-greeting">
+          <svg viewBox="0 0 500 140" class="greeting-svg">
+            <text id="greeting-text" x="50%" y="45%" text-anchor="middle">С 8 марта!</text>
+            <text id="greeting-name" x="50%" y="75%" text-anchor="middle">Дорогая, любимая!</text>
+          </svg>
+        </h1>
+        <div class="hero-flowers">
+          <!-- Роза -->
+          <div id="flower-1" class="hero-flower hero-flower--1 hero-flower-grow" data-click-flower>
+            <div class="flower__stem-wrap">
+              <div class="flower__stem flower__stem--1"></div>
+              <div class="flower__leaf flower__leaf--left"></div>
+              <div class="flower__bloom flower__bloom--1">
+                <svg viewBox="0 0 100 100">
+
+<defs>
+  <linearGradient id="rose-petal" x1="0%" y1="100%" x2="0%" y2="0%"><stop offset="0%" stop-color="#ea80b0"/><stop offset="50%" stop-color="#f5c4d8"/><stop offset="100%" stop-color="#fce4ec"/></linearGradient>
+  <linearGradient id="rose-petal-dark" x1="0%" y1="100%" x2="0%" y2="0%"><stop offset="0%" stop-color="#d96a9a"/><stop offset="100%" stop-color="#ea80b0"/></linearGradient>
+  <filter id="rose-shadow"><feDropShadow dx="0" dy="2" stdDeviation="2" flood-color="rgba(0,0,0,0.15)"/></filter>
+</defs>
+<g transform="translate(50,50)" filter="url(#rose-shadow)">
+  <g class="flower-petal flower-petal--1"><ellipse cx="0" cy="-22" rx="14" ry="22" fill="url(#rose-petal)" transform="rotate(0)" opacity="0.95"/></g>
+  <g class="flower-petal flower-petal--2"><ellipse cx="0" cy="-22" rx="14" ry="22" fill="url(#rose-petal)" transform="rotate(60)"/></g>
+  <g class="flower-petal flower-petal--3"><ellipse cx="0" cy="-22" rx="14" ry="22" fill="url(#rose-petal)" transform="rotate(120)"/></g>
+  <g class="flower-petal flower-petal--4"><ellipse cx="0" cy="-22" rx="14" ry="22" fill="url(#rose-petal)" transform="rotate(180)"/></g>
+  <g class="flower-petal flower-petal--5"><ellipse cx="0" cy="-22" rx="14" ry="22" fill="url(#rose-petal)" transform="rotate(240)"/></g>
+  <g class="flower-petal flower-petal--6"><ellipse cx="0" cy="-22" rx="14" ry="22" fill="url(#rose-petal)" transform="rotate(300)"/></g>
+  <g class="flower-petal flower-petal--7"><ellipse cx="0" cy="-12" rx="8" ry="14" fill="url(#rose-petal-dark)" transform="rotate(30)"/></g>
+  <g class="flower-petal flower-petal--8"><ellipse cx="0" cy="-12" rx="8" ry="14" fill="url(#rose-petal-dark)" transform="rotate(90)"/></g>
+  <g class="flower-petal flower-petal--9"><ellipse cx="0" cy="-12" rx="8" ry="14" fill="url(#rose-petal-dark)" transform="rotate(150)"/></g>
+  <circle class="flower-center" cx="0" cy="0" r="6" fill="#fce4ec"/>
+</g>
+</svg>
+              </div>
+            </div>
+          </div>
+          <!-- Пион -->
+          <div id="flower-2" class="hero-flower hero-flower--2 hero-flower-grow" data-click-flower>
+            <div class="flower__stem-wrap">
+              <div class="flower__stem flower__stem--2"></div>
+              <div class="flower__leaf flower__leaf--left"></div>
+              <div class="flower__leaf flower__leaf--right"></div>
+              <div class="flower__bloom flower__bloom--2">
+                <svg viewBox="0 0 120 120">
+
+<defs>
+  <linearGradient id="peony-petal" x1="0%" y1="100%" x2="0%" y2="0%"><stop offset="0%" stop-color="#e8b4bc"/><stop offset="40%" stop-color="#f5c4d8"/><stop offset="100%" stop-color="#fce4ec"/></linearGradient>
+  <linearGradient id="peony-petal-inner" x1="0%" y1="100%" x2="0%" y2="0%"><stop offset="0%" stop-color="#ea80b0"/><stop offset="100%" stop-color="#f5c4d8"/></linearGradient>
+  <filter id="peony-shadow"><feDropShadow dx="0" dy="3" stdDeviation="3" flood-color="rgba(0,0,0,0.12)"/></filter>
+</defs>
+<g transform="translate(60,60)" filter="url(#peony-shadow)">
+  <g class="flower-petal flower-petal--1"><ellipse cx="0" cy="-28" rx="18" ry="22" fill="url(#peony-petal)" transform="rotate(0)"/></g>
+  <g class="flower-petal flower-petal--2"><ellipse cx="0" cy="-28" rx="18" ry="22" fill="url(#peony-petal)" transform="rotate(45)"/></g>
+  <g class="flower-petal flower-petal--3"><ellipse cx="0" cy="-28" rx="18" ry="22" fill="url(#peony-petal)" transform="rotate(90)"/></g>
+  <g class="flower-petal flower-petal--4"><ellipse cx="0" cy="-28" rx="18" ry="22" fill="url(#peony-petal)" transform="rotate(135)"/></g>
+  <g class="flower-petal flower-petal--5"><ellipse cx="0" cy="-28" rx="18" ry="22" fill="url(#peony-petal)" transform="rotate(180)"/></g>
+  <g class="flower-petal flower-petal--6"><ellipse cx="0" cy="-28" rx="18" ry="22" fill="url(#peony-petal)" transform="rotate(225)"/></g>
+  <g class="flower-petal flower-petal--7"><ellipse cx="0" cy="-28" rx="18" ry="22" fill="url(#peony-petal)" transform="rotate(270)"/></g>
+  <g class="flower-petal flower-petal--8"><ellipse cx="0" cy="-28" rx="18" ry="22" fill="url(#peony-petal)" transform="rotate(315)"/></g>
+  <g class="flower-petal flower-petal--9"><ellipse cx="0" cy="-18" rx="12" ry="16" fill="url(#peony-petal-inner)" transform="rotate(22)"/></g>
+  <g class="flower-petal flower-petal--10"><ellipse cx="0" cy="-18" rx="12" ry="16" fill="url(#peony-petal-inner)" transform="rotate(67)"/></g>
+  <g class="flower-petal flower-petal--11"><ellipse cx="0" cy="-18" rx="12" ry="16" fill="url(#peony-petal-inner)" transform="rotate(112)"/></g>
+  <g class="flower-petal flower-petal--12"><ellipse cx="0" cy="-18" rx="12" ry="16" fill="url(#peony-petal-inner)" transform="rotate(157)"/></g>
+  <g class="flower-petal flower-petal--13"><ellipse cx="0" cy="-18" rx="12" ry="16" fill="url(#peony-petal-inner)" transform="rotate(202)"/></g>
+  <g class="flower-petal flower-petal--14"><ellipse cx="0" cy="-18" rx="12" ry="16" fill="url(#peony-petal-inner)" transform="rotate(247)"/></g>
+  <g class="flower-petal flower-petal--15"><ellipse cx="0" cy="-18" rx="12" ry="16" fill="url(#peony-petal-inner)" transform="rotate(292)"/></g>
+  <g class="flower-petal flower-petal--16"><ellipse cx="0" cy="-18" rx="12" ry="16" fill="url(#peony-petal-inner)" transform="rotate(337)"/></g>
+  <circle class="flower-center" cx="0" cy="0" r="10" fill="#fce4ec"/>
+</g>
+</svg>
+              </div>
+            </div>
+          </div>
+          <!-- Тюльпан -->
+          <div id="flower-3" class="hero-flower hero-flower--3 hero-flower-grow" data-click-flower>
+            <div class="flower__stem-wrap">
+              <div class="flower__stem flower__stem--3"></div>
+              <div class="flower__leaf flower__leaf--right"></div>
+              <div class="flower__bloom flower__bloom--3">
+                <svg viewBox="0 0 80 90">
+
+<defs>
+  <linearGradient id="tulip-petal" x1="0%" y1="100%" x2="0%" y2="0%"><stop offset="0%" stop-color="#ea80b0"/><stop offset="50%" stop-color="#f5c4d8"/><stop offset="100%" stop-color="#fce4ec"/></linearGradient>
+  <filter id="tulip-shadow"><feDropShadow dx="0" dy="2" stdDeviation="2" flood-color="rgba(0,0,0,0.12)"/></filter>
+</defs>
+<g transform="translate(40,45)" filter="url(#tulip-shadow)">
+  <g class="flower-petal flower-petal--1"><path d="M0,-35 Q12,-8 8,8 Q4,18 0,22 Q-4,18 -8,8 Q-12,-8 0,-35 Z" fill="url(#tulip-petal)" transform="rotate(0)"/></g>
+  <g class="flower-petal flower-petal--2"><path d="M0,-35 Q12,-8 8,8 Q4,18 0,22 Q-4,18 -8,8 Q-12,-8 0,-35 Z" fill="url(#tulip-petal)" transform="rotate(60)"/></g>
+  <g class="flower-petal flower-petal--3"><path d="M0,-35 Q12,-8 8,8 Q4,18 0,22 Q-4,18 -8,8 Q-12,-8 0,-35 Z" fill="url(#tulip-petal)" transform="rotate(120)"/></g>
+  <g class="flower-petal flower-petal--4"><path d="M0,-35 Q12,-8 8,8 Q4,18 0,22 Q-4,18 -8,8 Q-12,-8 0,-35 Z" fill="url(#tulip-petal)" transform="rotate(180)"/></g>
+  <g class="flower-petal flower-petal--5"><path d="M0,-35 Q12,-8 8,8 Q4,18 0,22 Q-4,18 -8,8 Q-12,-8 0,-35 Z" fill="url(#tulip-petal)" transform="rotate(240)"/></g>
+  <g class="flower-petal flower-petal--6"><path d="M0,-35 Q12,-8 8,8 Q4,18 0,22 Q-4,18 -8,8 Q-12,-8 0,-35 Z" fill="url(#tulip-petal)" transform="rotate(300)"/></g>
+</g>
+</svg>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- КОМПЛИМЕНТЫ -->
+    <section class="section compliments-section">
+      <h2 class="section-title">Почему ты особенная</h2>
+        <div class="compliments-grid">
+        <div class="compliment-card" data-card data-click-card>
+          <div class="compliment-icon"><svg viewBox="0 0 48 48"><path fill="#ea80b0" d="M24 40c-.3 0-.6-.1-.9-.2C12 35 4 28 4 18c0-7 5-12 12-12 4 0 8 2 10 5 2-3 6-5 10-5 7 0 12 5 12 12 0 10-8 17-19 22-.3.1-.6.2-.9.2z"/></svg></div>
+          <p>Твоя улыбка согревает сердце</p>
+        </div>
+        <div class="compliment-card" data-card data-click-card>
+          <div class="compliment-icon"><svg viewBox="0 0 48 48"><polygon fill="#ea80b0" points="24,4 28,18 43,18 31,28 35,44 24,35 13,44 17,28 5,18 20,18"/></svg></div>
+          <p>Ты вдохновляешь на подвиги</p>
+        </div>
+        <div class="compliment-card" data-card data-click-card>
+          <div class="compliment-icon"><svg viewBox="0 0 48 48"><g transform="translate(24,24)"><ellipse cx="0" cy="-10" rx="4" ry="7" fill="#ea80b0" transform="rotate(0)"/><ellipse cx="0" cy="-10" rx="4" ry="7" fill="#e8b4bc" transform="rotate(60)"/><ellipse cx="0" cy="-10" rx="4" ry="7" fill="#ea80b0" transform="rotate(120)"/><ellipse cx="0" cy="-10" rx="4" ry="7" fill="#e8b4bc" transform="rotate(180)"/><ellipse cx="0" cy="-10" rx="4" ry="7" fill="#ea80b0" transform="rotate(240)"/><ellipse cx="0" cy="-10" rx="4" ry="7" fill="#e8b4bc" transform="rotate(300)"/><circle cx="0" cy="0" r="5" fill="#fce4ec"/></g></svg></div>
+          <p>Невероятно красива</p>
+        </div>
+        <div class="compliment-card" data-card data-click-card>
+          <div class="compliment-icon"><svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="10" fill="#f5c4d8"/><path fill="#ea80b0" d="M24 12l2 8 8 2-6 5 2 8-6-4-6 4 2-8-6-5 8-2z"/></svg></div>
+          <p>Твоя доброта бесценна</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ИСТОРИЯ + ФОТО в конверте -->
+    <section class="section story-section">
+      <h2 class="section-title">Наша история</h2>
+      <div id="story-envelope" class="story-envelope" data-reveal>
+        <div class="story-env-wrapper">
+          <div class="story-env-body">
+            <div class="story-env-pocket">
+              <div class="story-note">
+                <p class="story-text">Каждый день рядом с тобой — это подарок. Ты делаешь мир ярче, а жизнь — прекраснее. Спасибо за твою улыбку, за твою доброту и за то счастье, которое ты даришь каждый день.</p>
+                <p class="story-text">Пусть этот праздник принесёт тебе море цветов, тёплых слов и незабываемых моментов!</p>
+                <div class="story-photos">
+                  <div class="story-photo"><img src="photos/photo1.jpg" alt="" onerror="this.src='https://placehold.co/70x85/f5e6e9/ea80b0?text=1'"></div>
+                  <div class="story-photo"><img src="photos/photo2.jpg" alt="" onerror="this.src='https://placehold.co/70x85/f5e6e9/ea80b0?text=2'"></div>
+                  <div class="story-photo"><img src="photos/photo3.jpg" alt="" onerror="this.src='https://placehold.co/70x85/f5e6e9/ea80b0?text=3'"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="story-env-flap"></div>
+        </div>
+        <p class="story-hint" id="story-hint">Нажми, чтобы открыть конверт</p>
+        <button class="story-pull-btn" id="story-pull-btn">Потяни записку ↑</button>
+      </div>
+    </section>
+
+    <!-- ФОТОГАЛЕРЕЯ -->
+    <section class="section gallery-section">
+      <h2 class="section-title">Ты — самая красивая</h2>
+      <div class="photo-gallery photo-gallery--masonry">
+        <div class="photo-item photo-item--1" data-photo data-click-photo><img src="photos/photo1.jpg" alt="" onerror="this.src='https://placehold.co/400x500/f5e6e9/ea80b0?text=Фото+1'"></div>
+        <div class="photo-item photo-item--2" data-photo data-click-photo><img src="photos/photo2.jpg" alt="" onerror="this.src='https://placehold.co/350x450/f5e6e9/ea80b0?text=Фото+2'"></div>
+        <div class="photo-item photo-item--3" data-photo data-click-photo><img src="photos/photo3.jpg" alt="" onerror="this.src='https://placehold.co/380x420/f5e6e9/ea80b0?text=Фото+3'"></div>
+        <div class="photo-item photo-item--4" data-photo data-click-photo><img src="photos/photo4.jpg" alt="" onerror="this.src='https://placehold.co/360x480/f5e6e9/ea80b0?text=Фото+4'"></div>
+        <div class="photo-item photo-item--5" data-photo data-click-photo><img src="photos/photo5.jpg" alt="" onerror="this.src='https://placehold.co/420x380/f5e6e9/ea80b0?text=Фото+5'"></div>
+      </div>
+    </section>
+
+    <!-- ПОЖЕЛАНИЯ -->
+    <section class="section wishes-section">
+      <h2 class="section-title">Мои пожелания</h2>
+      <div class="wishes-card" data-reveal>
+      <div class="wishes-grid wishes-grid--spaced">
+        <div class="wish-item" data-click-wish>Счастья и любви</div>
+        <div class="wish-item" data-click-wish>Исполнения мечты</div>
+        <div class="wish-item" data-click-wish>Здоровья и тепла</div>
+        <div class="wish-item" data-click-wish>Вдохновения всегда</div>
+        <div class="wish-item" data-click-wish>Улыбок и добра</div>
+        <div class="wish-item" data-click-wish>Радости с утра</div>
+      </div>
+      </div>
+    </section>
+
+    <!-- ФИНАЛ -->
+    <section class="final-section">
+      <div class="final-card" data-reveal>
+      <div class="final-content">
+        <p class="final-text">С любовью</p>
+        <button id="congrats-btn" class="congrats-btn">Поздравляю!</button>
+      </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- СТРАНИЦА ПОЗДРАВЛЕНИЙ — отдельная полноэкранная страница -->
+  <div id="congrats-page" class="congrats-page hidden">
+    <div class="congrats-page-bg"></div>
+    <div id="congrats-hearts" class="congrats-hearts"></div>
+    <div id="congrats-confetti" class="congrats-confetti"></div>
+    <div class="congrats-page-content">
+      <div class="congrats-card">
+        <div class="congrats-messages">
+          <p id="congrats-msg-display" class="congrats-msg-active"></p>
+        </div>
+        <button class="close-modal">Закрыть</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12/dist/ScrollTrigger.min.js"></script>
+  <script src="script.js?v=3"></script>
+</body>
+</html>

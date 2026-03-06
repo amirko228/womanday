@@ -1,0 +1,1214 @@
+/* ===== ПЕРЕМЕННЫЕ ===== */
+:root {
+  --pink: #ea80b0;
+  --pink-light: #f5c4d8;
+  --pink-pale: #fce4ec;
+  --rose: #e8b4bc;
+  --rose-deep: #d4a5a5;
+  --cream: #fdf8fa;
+  --cream-dark: #f5e6ec;
+  --text: #3d3540;
+  --text-soft: #6b5d66;
+  --gold: #d4af37;
+}
+
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Outfit', sans-serif;
+  background: var(--cream);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Удобные тапы на мобильных */
+button, .compliment-card, .wish-item, .photo-item, [data-click-flower], [data-click-hero], [data-reveal] {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* ===== ОТКРЫТКА ===== */
+.card-screen {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(165deg, var(--cream) 0%, var(--pink-pale) 40%, var(--cream-dark) 100%);
+  z-index: 1000;
+  transition: opacity 0.8s ease, visibility 0.8s ease;
+}
+
+.card-screen.hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.card-bg-pattern {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle at 20% 80%, rgba(234,128,176,0.08) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(245,196,216,0.12) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+.card-greeting {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 2.5rem;
+  font-weight: 600;
+  color: var(--pink);
+  margin-bottom: 1rem;
+  text-align: center;
+  text-shadow: 0 2px 20px rgba(234,128,176,0.3);
+}
+
+.card-hint {
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--text-soft);
+  margin-bottom: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  animation: float 3s ease-in-out infinite;
+  cursor: pointer;
+}
+
+.card-hint-arrow {
+  font-size: 1.5rem;
+  color: var(--pink);
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+/* Начальный конверт — как в блоке «Наша история» */
+.card-envelope {
+  position: relative;
+  width: 340px;
+  cursor: pointer;
+  perspective: 800px;
+  filter: drop-shadow(0 8px 30px rgba(180,100,120,0.15));
+}
+
+.card-env-wrapper {
+  position: relative;
+  min-height: 160px;
+}
+
+.card-env-body {
+  position: relative;
+  background: linear-gradient(180deg, #fefefe 0%, #fdf5f8 30%, #fce8ef 100%);
+  min-height: 160px;
+  border-radius: 0 0 8px 8px;
+  border: 2px solid rgba(200,150,170,0.55);
+  border-top: none;
+  box-shadow: inset 0 2px 20px rgba(255,255,255,0.5),
+    0 8px 35px rgba(180,100,120,0.2),
+    0 2px 10px rgba(0,0,0,0.06);
+  overflow: hidden;
+}
+
+.card-env-pocket {
+  position: relative;
+  min-height: 160px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.card-env-letter {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.card-env-flap {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 100px;
+  background: linear-gradient(180deg, #fff 0%, #fdf5f8 50%, #fce8ef 100%);
+  border: 2px solid rgba(200,150,170,0.55);
+  border-bottom: none;
+  transform-origin: top center;
+  transition: transform 0.9s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  box-shadow: 0 4px 20px rgba(180,100,120,0.2),
+    inset 0 1px 0 rgba(255,255,255,0.9);
+  clip-path: polygon(0 0, 50% 100%, 100% 0);
+  z-index: 2;
+}
+
+.envelope-text {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 2rem;
+  font-weight: 600;
+  color: var(--pink);
+}
+
+.envelope-sub {
+  font-size: 0.75rem;
+  color: var(--text-soft);
+  letter-spacing: 0.08em;
+}
+
+.card-hearts {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 10;
+  overflow: visible;
+}
+
+/* ===== ГЛАВНАЯ ===== */
+.main-content {
+  min-height: 100vh;
+  min-height: 100dvh;
+  opacity: 0;
+  transition: opacity 0.6s ease;
+  padding-bottom: env(safe-area-inset-bottom, 0);
+}
+
+.main-content.visible { opacity: 1; }
+.main-content.hidden { display: none; }
+
+/* Падающие лепестки — контейнер с отступами, чтобы не обрезало */
+.petals {
+  position: fixed;
+  left: 20px;
+  right: 20px;
+  top: 0;
+  bottom: 0;
+  width: calc(100% - 40px);
+  pointer-events: none;
+  z-index: 1;
+  overflow: visible;
+}
+
+.petal {
+  position: absolute;
+  width: 14px;
+  height: 20px;
+  background: linear-gradient(135deg, var(--pink-light), var(--pink));
+  border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+  opacity: 0.7;
+}
+
+/* Декоративные цветы — контейнер с отступами, чтобы не обрезало */
+.deco-flowers {
+  position: fixed;
+  left: 20px;
+  right: 20px;
+  top: 0;
+  bottom: 0;
+  width: calc(100% - 40px);
+  pointer-events: none;
+  z-index: 0;
+  overflow: visible;
+}
+
+.deco-flower {
+  position: absolute;
+  width: 56px;
+  height: 56px;
+  opacity: 0.32;
+  filter: drop-shadow(0 1px 4px rgba(234,128,176,0.12));
+  animation: deco-float 18s ease-in-out infinite;
+  cursor: pointer;
+  pointer-events: auto;
+  transition: opacity 0.3s ease;
+}
+
+.deco-flower:hover {
+  opacity: 0.45;
+}
+
+.deco-flower svg {
+  width: 100%;
+  height: 100%;
+}
+
+@keyframes deco-float {
+  0%, 100% { transform: translate(0, 0) rotate(0deg); }
+  25% { transform: translate(4px, -6px) rotate(4deg); }
+  50% { transform: translate(-3px, 4px) rotate(-2deg); }
+  75% { transform: translate(5px, 2px) rotate(4deg); }
+}
+
+
+/* ===== HERO ===== */
+.hero {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 1rem;
+  position: relative;
+  z-index: 2;
+  overflow: visible;
+}
+
+/* Декорации по бокам главной */
+.hero::before,
+.hero::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: min(18vw, 200px);
+  pointer-events: none;
+  opacity: 0.4;
+}
+
+.hero::before {
+  left: 0;
+  background: linear-gradient(90deg, rgba(234,128,176,0.12) 0%, transparent 100%);
+}
+
+.hero::after {
+  right: 0;
+  background: linear-gradient(270deg, rgba(234,128,176,0.12) 0%, transparent 100%);
+}
+
+.hero-side-deco {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: min(18vw, 180px);
+  pointer-events: none;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 2rem 0;
+  overflow: visible;
+}
+
+.hero-side-deco--left { left: 0; align-items: flex-start; padding-left: 0; }
+.hero-side-deco--right { right: 0; align-items: flex-end; padding-right: 0; }
+
+.hero-side-flower {
+  width: 100%;
+  max-width: 110px;
+  height: auto;
+  opacity: 0.45;
+  filter: drop-shadow(0 2px 6px rgba(234,128,176,0.2));
+  animation: side-flower-sway 6s ease-in-out infinite;
+}
+
+.hero-side-deco--right .hero-side-flower { animation-delay: 1s; }
+
+.hero-side-small {
+  width: 55%;
+  max-width: 55px;
+  height: auto;
+  opacity: 0.4;
+  filter: drop-shadow(0 1px 3px rgba(234,128,176,0.12));
+  animation: side-flower-sway 5s ease-in-out infinite 0.5s;
+}
+
+@keyframes side-flower-sway {
+  0%, 100% { transform: rotate(-3deg); }
+  50% { transform: rotate(3deg); }
+}
+
+.hero-bg {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 80% 50% at 50% 20%, rgba(234,128,176,0.15) 0%, transparent 50%),
+    radial-gradient(ellipse 60% 80% at 80% 80%, rgba(245,196,216,0.2) 0%, transparent 50%),
+    radial-gradient(ellipse 60% 80% at 20% 80%, rgba(245,196,216,0.15) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+.hero-content {
+  text-align: center;
+  position: relative;
+  max-width: 600px;
+}
+
+.drawn-greeting {
+  margin-bottom: 3rem;
+}
+
+.greeting-svg {
+  width: 100%;
+  max-width: 420px;
+  height: 140px;
+}
+
+.greeting-svg text {
+  font-family: 'Cormorant Garamond', serif;
+  fill: none;
+  stroke: var(--pink);
+  stroke-width: 2;
+  stroke-linejoin: round;
+  stroke-dasharray: 1000;
+  stroke-dashoffset: 1000;
+  filter: drop-shadow(0 0 16px rgba(234,128,176,0.5));
+}
+
+#greeting-text { font-size: 3.2rem; font-weight: 600; }
+#greeting-name { font-size: 1.8rem; font-weight: 500; stroke: var(--rose-deep); }
+
+/* Цветы Hero — прорастание: стебель → листья → бутон раскрывается */
+.hero-flowers {
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  gap: 3rem;
+  margin-top: 2rem;
+}
+
+.hero-flower {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transform-origin: bottom center;
+  cursor: pointer;
+  filter: drop-shadow(0 6px 20px rgba(234,128,176,0.35));
+}
+
+.hero-flower:hover { transform: scale(1.05); animation-play-state: paused; }
+
+.hero-flower--1 { transform: translateX(-20px); }
+.hero-flower--2 { transform: translateY(10px); }
+.hero-flower--3 { transform: translateX(20px); }
+
+.hero-flower--1:hover { transform: translateX(-20px) scale(1.05); }
+.hero-flower--2:hover { transform: translateY(10px) scale(1.05); }
+.hero-flower--3:hover { transform: translateX(20px) scale(1.05); }
+
+/* Покачивание как на ветру — после полной отрисовки цветов (~4s) */
+.hero-flower--1.hero-flower-grow { animation: flower-sway-1 4s ease-in-out infinite; animation-delay: 4s; }
+.hero-flower--2.hero-flower-grow { animation: flower-sway-2 4.5s ease-in-out infinite; animation-delay: 4.2s; }
+.hero-flower--3.hero-flower-grow { animation: flower-sway-3 4.2s ease-in-out infinite; animation-delay: 4.4s; }
+
+@keyframes flower-sway-1 {
+  0%, 100% { transform: translateX(-20px) rotate(-2deg); }
+  50% { transform: translateX(-20px) rotate(2deg); }
+}
+@keyframes flower-sway-2 {
+  0%, 100% { transform: translateY(10px) rotate(-2deg); }
+  50% { transform: translateY(10px) rotate(2deg); }
+}
+@keyframes flower-sway-3 {
+  0%, 100% { transform: translateX(20px) rotate(2deg); }
+  50% { transform: translateX(20px) rotate(-2deg); }
+}
+
+.flower__stem-wrap {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Стебель — растёт снизу вверх */
+.flower__stem {
+  width: 6px;
+  background: linear-gradient(to top, #1e4a1e, #2d5a2d 20%, #4a7c4a 50%, #5a8f5a 80%, #6b9e6b);
+  border-radius: 3px;
+  transform-origin: bottom center;
+  transform: scaleY(0);
+  animation: stem-grow 2s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  box-shadow: inset 1px 0 0 rgba(255,255,255,0.25), inset -1px 0 0 rgba(0,0,0,0.08);
+}
+
+.flower__stem--1 { height: 180px; animation-delay: 0.5s; }
+.flower__stem--2 { height: 220px; animation-delay: 0.8s; }
+.flower__stem--3 { height: 160px; animation-delay: 1.1s; }
+
+@keyframes stem-grow {
+  0% { transform: scaleY(0); opacity: 0.9; }
+  100% { transform: scaleY(1); opacity: 1; }
+}
+
+/* Листья */
+.flower__leaf {
+  position: absolute;
+  width: 28px;
+  height: 42px;
+  background: linear-gradient(135deg, #4a7c4a 0%, #5a8f5a 40%, #6b9e6b 100%);
+  border-radius: 50% 0 50% 50% / 50% 0 50% 50%;
+  transform-origin: right center;
+  animation: leaf-grow 1s cubic-bezier(0.22, 1, 0.36, 1) 1.8s backwards;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.flower__leaf--left { left: 2px; bottom: 40%; transform: rotate(-25deg); }
+.flower__leaf--right { right: 2px; left: auto; bottom: 40%; transform: rotate(25deg) scaleX(-1); animation-name: leaf-grow-right; }
+
+.hero-flower--2 .flower__leaf--left { bottom: 70%; }
+.hero-flower--2 .flower__leaf--right { bottom: 35%; animation-delay: 2s; }
+.hero-flower--3 .flower__leaf { bottom: 45%; animation-delay: 1.9s; }
+
+@keyframes leaf-grow {
+  0% { transform: rotate(-25deg) scale(0); opacity: 0; }
+  100% { transform: rotate(-25deg) scale(1); opacity: 1; }
+}
+@keyframes leaf-grow-right {
+  0% { transform: rotate(25deg) scaleX(-1) scale(0); opacity: 0; }
+  100% { transform: rotate(25deg) scaleX(-1) scale(1); opacity: 1; }
+}
+
+/* Бутон — изначально скрыт, появляется и лепестки раскрываются по кругу */
+.flower__bloom {
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  margin-bottom: -2px;
+  transform: translateX(-50%) translateY(6px);
+  transform-origin: center bottom;
+  opacity: 0;
+  animation: bloom-fade-in 0.5s ease-out forwards;
+}
+
+.flower__bloom--1 { animation-delay: 2.2s; }
+.flower__bloom--2 { animation-delay: 2.6s; }
+.flower__bloom--3 { animation-delay: 2.9s; }
+
+@keyframes bloom-fade-in {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+/* Лепестки — раскрываются по кругу, по одному */
+.flower__bloom .flower-petal {
+  transform-origin: 0 0;
+  opacity: 0;
+  animation: petal-open 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.flower__bloom--1 .flower-petal--1 { animation-delay: 2.25s; }
+.flower__bloom--1 .flower-petal--2 { animation-delay: 2.33s; }
+.flower__bloom--1 .flower-petal--3 { animation-delay: 2.41s; }
+.flower__bloom--1 .flower-petal--4 { animation-delay: 2.49s; }
+.flower__bloom--1 .flower-petal--5 { animation-delay: 2.57s; }
+.flower__bloom--1 .flower-petal--6 { animation-delay: 2.65s; }
+.flower__bloom--1 .flower-petal--7 { animation-delay: 2.73s; }
+.flower__bloom--1 .flower-petal--8 { animation-delay: 2.81s; }
+.flower__bloom--1 .flower-petal--9 { animation-delay: 2.89s; }
+
+.flower__bloom--2 .flower-petal--1 { animation-delay: 2.65s; }
+.flower__bloom--2 .flower-petal--2 { animation-delay: 2.72s; }
+.flower__bloom--2 .flower-petal--3 { animation-delay: 2.79s; }
+.flower__bloom--2 .flower-petal--4 { animation-delay: 2.86s; }
+.flower__bloom--2 .flower-petal--5 { animation-delay: 2.93s; }
+.flower__bloom--2 .flower-petal--6 { animation-delay: 3.00s; }
+.flower__bloom--2 .flower-petal--7 { animation-delay: 3.07s; }
+.flower__bloom--2 .flower-petal--8 { animation-delay: 3.14s; }
+.flower__bloom--2 .flower-petal--9 { animation-delay: 3.21s; }
+.flower__bloom--2 .flower-petal--10 { animation-delay: 3.28s; }
+.flower__bloom--2 .flower-petal--11 { animation-delay: 3.35s; }
+.flower__bloom--2 .flower-petal--12 { animation-delay: 3.42s; }
+.flower__bloom--2 .flower-petal--13 { animation-delay: 3.49s; }
+.flower__bloom--2 .flower-petal--14 { animation-delay: 3.56s; }
+.flower__bloom--2 .flower-petal--15 { animation-delay: 3.63s; }
+.flower__bloom--2 .flower-petal--16 { animation-delay: 3.70s; }
+
+.flower__bloom--3 .flower-petal--1 { animation-delay: 2.95s; }
+.flower__bloom--3 .flower-petal--2 { animation-delay: 3.03s; }
+.flower__bloom--3 .flower-petal--3 { animation-delay: 3.11s; }
+.flower__bloom--3 .flower-petal--4 { animation-delay: 3.19s; }
+.flower__bloom--3 .flower-petal--5 { animation-delay: 3.27s; }
+.flower__bloom--3 .flower-petal--6 { animation-delay: 3.35s; }
+
+/* Тюльпан — центр вращения у основания чашечки */
+.flower__bloom--3 .flower-petal { transform-origin: 0 22px; }
+
+@keyframes petal-open {
+  0% { transform: rotate(-85deg) scale(0.4); opacity: 0; }
+  100% { transform: rotate(0deg) scale(1); opacity: 1; }
+}
+
+/* Центр цветка появляется после лепестков */
+.flower__bloom .flower-center {
+  transform-origin: center;
+  opacity: 0;
+  animation: center-appear 0.4s ease-out forwards;
+}
+
+.flower__bloom--1 .flower-center { animation-delay: 2.9s; }
+.flower__bloom--2 .flower-center { animation-delay: 3.75s; }
+.flower__bloom--3 .flower-center { animation-delay: 3.4s; }
+
+@keyframes center-appear {
+  0% { opacity: 0; transform: scale(0.5); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+.flower__bloom svg {
+  display: block;
+}
+
+.flower__bloom--1 svg { width: 95px; height: 95px; }
+.flower__bloom--2 svg { width: 115px; height: 115px; }
+.flower__bloom--3 svg { width: 85px; height: 95px; }
+
+/* hero-flower-grow — класс для разметки, без покачивания */
+
+
+/* ===== СЕКЦИИ ===== */
+.section {
+  max-width: 900px;
+  margin: 0 auto 5rem;
+  padding: 0 1.5rem;
+  position: relative;
+  z-index: 2;
+}
+
+.story-section { padding-left: 1rem; padding-right: 1rem; }
+
+.section-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 2.2rem;
+  font-weight: 600;
+  text-align: center;
+  color: var(--text);
+  margin-bottom: 2.5rem;
+  letter-spacing: 0.02em;
+}
+
+/* Комплименты */
+.compliments-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.25rem;
+}
+
+.compliment-card {
+  background: rgba(255,255,255,0.9);
+  padding: 2rem 1.5rem;
+  border-radius: 20px;
+  text-align: center;
+  border: 2px solid rgba(234,128,176,0.2);
+  box-shadow: 0 8px 32px rgba(234,128,176,0.12);
+  transition: all 0.4s ease;
+  opacity: 0;
+  transform: translateY(30px);
+  cursor: pointer;
+}
+
+.compliment-card.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.compliment-card:hover {
+  transform: translateY(-6px) scale(1.02);
+  box-shadow: 0 16px 48px rgba(234,128,176,0.2);
+  border-color: rgba(234,128,176,0.4);
+}
+
+.compliment-icon {
+  width: 56px;
+  height: 56px;
+  margin: 0 auto 1rem;
+}
+
+.compliment-icon svg {
+  width: 100%;
+  height: 100%;
+}
+
+.compliment-card p {
+  font-size: 1.05rem;
+  color: var(--text-soft);
+  line-height: 1.5;
+}
+
+/* История — закрытый конверт → открыть → вытянуть записку */
+.story-envelope {
+  position: relative;
+  max-width: 480px;
+  margin: 0 auto;
+  padding-bottom: 2rem;
+  opacity: 0;
+  transform: translateY(30px);
+}
+
+.story-envelope.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.story-env-wrapper {
+  position: relative;
+  min-height: 150px;
+  cursor: pointer;
+  perspective: 800px;
+  filter: drop-shadow(0 8px 30px rgba(180,100,120,0.15));
+}
+
+.story-env-body {
+  position: relative;
+  background: linear-gradient(180deg, #fefefe 0%, #fdf5f8 30%, #fce8ef 100%);
+  min-height: 150px;
+  border-radius: 0 0 8px 8px;
+  border: 2px solid rgba(200,150,170,0.55);
+  border-top: none;
+  box-shadow: inset 0 2px 20px rgba(255,255,255,0.5),
+    0 8px 35px rgba(180,100,120,0.2),
+    0 2px 10px rgba(0,0,0,0.06);
+  overflow: visible;
+}
+
+.story-envelope:not(.note-out) .story-env-body {
+  overflow: hidden;
+}
+
+.story-env-pocket {
+  position: relative;
+  min-height: 150px;
+  overflow: hidden;
+}
+
+.story-envelope.note-out .story-env-pocket {
+  overflow: visible;
+}
+
+.story-note {
+  position: relative;
+  width: 90%;
+  max-width: 420px;
+  margin: 0 auto;
+  margin-top: 0.5rem;
+  background: linear-gradient(180deg, #fff 0%, #fdf8fa 100%);
+  padding: 1.25rem 1.5rem 1.5rem;
+  border-radius: 8px 8px 0 0;
+  border: 2px solid rgba(234,128,176,0.35);
+  border-bottom: none;
+  box-shadow: 0 -6px 25px rgba(234,128,176,0.25);
+  transform: translateY(100%);
+  transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+  z-index: 3;
+}
+
+.story-envelope.flap-open .story-note {
+  transform: translateY(calc(100% - 12px));
+}
+
+.story-envelope.note-out .story-note {
+  transform: translateY(-25%);
+}
+
+.story-env-flap {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 100px;
+  background: linear-gradient(180deg, #fff 0%, #fdf5f8 50%, #fce8ef 100%);
+  border: 2px solid rgba(200,150,170,0.55);
+  border-bottom: none;
+  transform-origin: top center;
+  transition: transform 0.9s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  box-shadow: 0 4px 20px rgba(180,100,120,0.2),
+    inset 0 1px 0 rgba(255,255,255,0.9);
+  clip-path: polygon(0 0, 50% 100%, 100% 0);
+  z-index: 2;
+}
+
+.story-envelope.flap-open .story-env-flap {
+  transform: rotateX(-110deg);
+}
+
+.story-hint {
+  font-size: 1rem;
+  color: var(--rose-deep);
+  margin-top: 1.25rem;
+  text-align: center;
+}
+
+.story-envelope.flap-open .story-hint {
+  display: none;
+}
+
+.story-pull-btn {
+  display: none;
+  margin: 1.25rem auto 0;
+  padding: 0.75rem 1.5rem;
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--pink);
+  background: rgba(234,128,176,0.15);
+  border: 2px solid var(--pink);
+  border-radius: 50px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.story-pull-btn:hover {
+  background: var(--pink);
+  color: #fff;
+}
+
+.story-envelope.flap-open .story-pull-btn {
+  display: block;
+  opacity: 1;
+  animation: fadeIn 0.4s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.story-envelope.note-out .story-pull-btn {
+  display: none !important;
+}
+
+.story-note .story-photos {
+  display: flex;
+  gap: 0.6rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 1rem;
+}
+
+.story-note .story-photo {
+  width: 70px;
+  height: 85px;
+  border-radius: 6px;
+  overflow: hidden;
+  border: 2px solid #fff;
+  box-shadow: 0 4px 12px rgba(234,128,176,0.2);
+}
+
+.story-note .story-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.story-hint {
+  font-size: 0.9rem;
+  color: var(--rose-deep);
+  margin-top: 1rem;
+  text-align: center;
+}
+
+/* История (legacy) */
+.story-content {
+  background: rgba(255,255,255,0.9);
+  padding: 3rem;
+  border-radius: 24px;
+  border: 2px solid rgba(234,128,176,0.15);
+  box-shadow: 0 12px 48px rgba(234,128,176,0.1);
+  opacity: 0;
+  transform: translateY(40px);
+}
+
+.story-content.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.story-note .story-text {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--text-soft);
+  margin-bottom: 0.75rem;
+}
+
+.story-hint {
+  font-size: 0.95rem;
+  color: var(--rose-deep);
+  margin-top: 1.5rem;
+}
+
+/* Галерея — polaroid-стиль, разбросанные фото */
+.photo-gallery {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1.5rem;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+.photo-gallery--masonry .photo-item {
+  flex: 0 0 auto;
+  width: 220px;
+  padding: 12px 12px 40px;
+  background: #fff;
+  border-radius: 4px;
+  box-shadow: 0 8px 30px rgba(234,128,176,0.25), 0 2px 8px rgba(0,0,0,0.08);
+  transform: rotate(var(--r, 0deg));
+  transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+  opacity: 0;
+  cursor: pointer;
+}
+
+.photo-gallery--masonry .photo-item--1 { --r: -6deg; order: 1; }
+.photo-gallery--masonry .photo-item--2 { --r: 4deg; order: 2; margin-top: 2rem; }
+.photo-gallery--masonry .photo-item--3 { --r: -3deg; order: 3; margin-top: 1rem; }
+.photo-gallery--masonry .photo-item--4 { --r: 5deg; order: 4; margin-top: 2.5rem; }
+.photo-gallery--masonry .photo-item--5 { --r: -2deg; order: 5; margin-top: 0.5rem; }
+
+.photo-item.visible {
+  opacity: 1;
+}
+
+.photo-item:hover {
+  transform: rotate(0) scale(1.05);
+  box-shadow: 0 16px 50px rgba(234,128,176,0.35);
+}
+
+.photo-item {
+  overflow: hidden;
+  border-radius: 4px;
+}
+
+.photo-item img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  display: block;
+}
+
+@media (max-width: 700px) {
+  .photo-gallery--masonry .photo-item {
+    width: 180px;
+    margin-top: 0 !important;
+  }
+  .photo-gallery--masonry .photo-item img { height: 160px; }
+}
+
+/* Пожелания — на карточке */
+.wishes-card {
+  background: linear-gradient(180deg, rgba(255,255,255,0.95) 0%, rgba(253,245,250,0.98) 100%);
+  padding: 2.5rem;
+  border-radius: 24px;
+  border: 2px solid rgba(234,128,176,0.2);
+  box-shadow: 0 12px 48px rgba(234,128,176,0.15);
+  max-width: 750px;
+  margin: 0 auto;
+  opacity: 0;
+  transform: translateY(30px);
+}
+
+.wishes-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1rem;
+}
+
+.wishes-grid--spaced {
+  gap: 1.5rem;
+  grid-template-columns: repeat(3, 1fr);
+  max-width: 100%;
+}
+
+
+.wish-item {
+  background: linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(252,228,236,0.5) 100%);
+  padding: 1.5rem;
+  border-radius: 16px;
+  text-align: center;
+  font-size: 1.1rem;
+  color: var(--text);
+  border: 2px solid rgba(234,128,176,0.2);
+  box-shadow: 0 6px 24px rgba(234,128,176,0.1);
+  transition: all 0.3s ease;
+  opacity: 0;
+  transform: scale(0.9);
+  cursor: pointer;
+}
+
+.wish-item.visible {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.wish-item:hover {
+  transform: scale(1.05);
+  border-color: var(--pink);
+  box-shadow: 0 12px 36px rgba(234,128,176,0.2);
+}
+
+/* Финальная секция — на карточке */
+.final-section {
+  padding: 6rem 1rem;
+  text-align: center;
+  position: relative;
+  z-index: 2;
+}
+
+.final-card {
+  background: linear-gradient(180deg, rgba(255,255,255,0.95) 0%, rgba(253,245,250,0.98) 100%);
+  padding: 3rem;
+  border-radius: 24px;
+  border: 2px solid rgba(234,128,176,0.2);
+  box-shadow: 0 12px 48px rgba(234,128,176,0.15);
+  max-width: 480px;
+  margin: 0 auto;
+  opacity: 0;
+  transform: translateY(30px);
+}
+
+.final-card.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.final-content {
+  opacity: 1;
+}
+
+.final-text {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.8rem;
+  color: var(--text-soft);
+  margin-bottom: 1.5rem;
+}
+
+.congrats-btn {
+  font-family: inherit;
+  font-size: 1.3rem;
+  font-weight: 600;
+  padding: 1.2rem 3rem;
+  background: linear-gradient(135deg, var(--pink) 0%, var(--rose) 100%);
+  color: #fff;
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  box-shadow: 0 12px 40px rgba(234,128,176,0.4);
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.congrats-btn:hover {
+  transform: scale(1.08);
+  box-shadow: 0 16px 50px rgba(234,128,176,0.5);
+}
+
+/* ===== СТРАНИЦА ПОЗДРАВЛЕНИЙ ===== */
+.congrats-page {
+  position: fixed;
+  inset: 0;
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1100;
+  transition: opacity 0.5s ease;
+}
+
+.congrats-page-bg {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 120% 80% at 50% 30%, rgba(252,228,236,0.95) 0%, rgba(245,196,216,0.9) 50%, rgba(234,128,176,0.2) 100%);
+  background-image: radial-gradient(circle at 20% 30%, rgba(252,228,236,0.98) 0%, transparent 40%),
+    radial-gradient(circle at 80% 70%, rgba(245,196,216,0.9) 0%, transparent 50%),
+    radial-gradient(ellipse 100% 60% at 50% 50%, rgba(234,128,176,0.15) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.congrats-page.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.congrats-page-content {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.congrats-hearts, .congrats-confetti {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.congrats-card {
+  background: linear-gradient(180deg, #fff 0%, #fdf8fa 100%);
+  padding: 2.5rem 3rem;
+  border-radius: 24px;
+  border: 2px solid rgba(234,128,176,0.25);
+  box-shadow: 0 16px 56px rgba(234,128,176,0.25);
+  max-width: 480px;
+  text-align: center;
+}
+
+.congrats-messages {
+  min-height: 140px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+}
+
+.congrats-msg-active {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.8rem;
+  color: var(--pink);
+  font-weight: 600;
+  text-align: center;
+  max-width: 90%;
+  padding: 0 1rem;
+}
+
+.close-modal {
+  font-family: inherit;
+  font-size: 1rem;
+  padding: 0.8rem 2rem;
+  background: rgba(234,128,176,0.2);
+  color: var(--pink);
+  border: 2px solid var(--pink);
+  border-radius: 50px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.close-modal:hover {
+  background: var(--pink);
+  color: #fff;
+}
+
+/* ===== АДАПТИВ — мобильные и планшеты ===== */
+
+/* Планшеты */
+@media (max-width: 768px) {
+  .hero { padding: 3rem 1rem; }
+  .hero-side-deco { width: min(16vw, 120px); }
+  .hero-side-flower { max-width: 100px; }
+  .section { padding: 0 1.25rem 4rem; }
+  .section-title { font-size: 2rem; margin-bottom: 2rem; }
+  .compliment-card { padding: 1.5rem 1.25rem; }
+  .compliments-grid { grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 1rem; }
+  .wishes-card { padding: 2rem 1.5rem; }
+  .wishes-grid--spaced { gap: 1.25rem; }
+  .final-section { padding: 4rem 1rem; }
+  .final-card { padding: 2.5rem; }
+  .congrats-card { padding: 2rem 2.5rem; }
+}
+
+/* Телефоны */
+@media (max-width: 600px) {
+  .card-greeting { font-size: 2rem; }
+  .card-hint { font-size: 0.9rem; margin-bottom: 1rem; }
+  .card-envelope { width: 280px; }
+  .card-env-wrapper { min-height: 130px; }
+  .card-env-body { min-height: 130px; }
+  .card-env-pocket { min-height: 130px; }
+  .card-env-flap { height: 80px; }
+  .envelope-sub { font-size: 0.7rem; }
+
+  .hero { padding: 2rem 0.75rem; }
+  .hero-side-deco { display: none; }
+  .drawn-greeting { margin-bottom: 2rem; }
+  .hero-flowers { gap: 1.5rem; margin-top: 1.5rem; }
+  .flower__stem--1 { height: 120px; }
+  .flower__stem--2 { height: 150px; }
+  .flower__stem--3 { height: 110px; }
+  .flower__bloom--1 svg { width: 60px; height: 60px; }
+  .flower__bloom--2 svg { width: 75px; height: 75px; }
+  .flower__bloom--3 svg { width: 55px; height: 62px; }
+  .flower__leaf { width: 18px; height: 28px; }
+  .greeting-svg { max-width: 280px; }
+  #greeting-text { font-size: 2.2rem; }
+  #greeting-name { font-size: 1.2rem; }
+
+  .section { padding: 0 1rem 3.5rem; }
+  .story-section { padding-left: 1.25rem; padding-right: 1.25rem; }
+  .section-title { font-size: 1.75rem; margin-bottom: 1.5rem; }
+  .compliment-card { padding: 1.25rem 1rem; }
+  .compliment-card p { font-size: 0.95rem; }
+  .compliment-icon { width: 48px; height: 48px; }
+  .compliments-grid { grid-template-columns: 1fr; gap: 0.9rem; }
+
+  /* Конверт с историей — компактный и аккуратный на телефоне */
+  .story-section .section-title { margin-bottom: 1rem; }
+  .story-envelope { max-width: 100%; padding: 0 0.5rem 1.25rem; }
+  .story-env-wrapper { min-height: 85px; max-width: 240px; margin: 0 auto; filter: drop-shadow(0 4px 16px rgba(180,100,120,0.12)); }
+  .story-env-body { min-height: 85px; border-radius: 0 0 6px 6px; }
+  .story-envelope:not(.note-out) .story-env-body { min-height: 85px; }
+  .story-env-pocket { min-height: 85px; }
+  .story-env-flap { height: 52px; border-radius: 0 0 4px 4px; }
+  .story-note { width: 92%; max-width: none; padding: 0.85rem 1rem 1rem; margin-top: 0.2rem; border-radius: 6px 6px 0 0; }
+  .story-note .story-text { font-size: 0.9rem; line-height: 1.4; }
+  .story-note .story-photos { gap: 0.4rem; margin-top: 0.6rem; }
+  .story-note .story-photo { width: 48px; height: 60px; border-radius: 4px; }
+  .story-hint { font-size: 0.8rem; margin-top: 0.6rem; color: var(--text-soft); }
+  .story-pull-btn { padding: 0.5rem 1rem; font-size: 0.85rem; margin-top: 0.6rem; }
+
+  .photo-gallery--masonry .photo-item { width: 100%; max-width: 280px; margin: 0 auto 0.5rem !important; }
+  .photo-gallery--masonry .photo-item img { height: 220px; }
+  .photo-gallery--masonry { flex-direction: column; align-items: center; }
+
+  .wishes-card { padding: 1.5rem 1rem; }
+  .wishes-grid--spaced { grid-template-columns: 1fr; gap: 1rem; }
+  .wish-item { padding: 1.25rem; font-size: 1rem; }
+
+  .final-section { padding: 3rem 1rem; }
+  .final-card { padding: 2rem 1.25rem; max-width: 100%; }
+  .final-text { font-size: 1.5rem; margin-bottom: 1.25rem; }
+  .congrats-btn { font-size: 1.15rem; padding: 1rem 2rem; }
+
+  .congrats-page-content { padding: 1rem; }
+  .congrats-card { padding: 1.75rem 1.5rem; max-width: 95%; }
+  .congrats-msg-active { font-size: 1.5rem; }
+  .close-modal { padding: 0.65rem 1.5rem; font-size: 0.9rem; }
+
+  .deco-flower { width: 38px !important; height: 38px !important; opacity: 0.28; }
+  .deco-flower:nth-child(n+7) { display: none; }
+  .petals, .deco-flowers { left: 12px; right: 12px; width: calc(100% - 24px); }
+}
+
+@media (max-width: 360px) {
+  .petals, .deco-flowers { left: 8px; right: 8px; width: calc(100% - 16px); }
+  .deco-flower { width: 32px !important; height: 32px !important; }
+  .story-env-wrapper { max-width: 180px; min-height: 68px; }
+  .story-env-body { min-height: 68px; }
+  .story-envelope:not(.note-out) .story-env-body { min-height: 68px; }
+  .story-env-pocket { min-height: 68px; }
+  .story-env-flap { height: 40px; }
+}
+
+/* Маленькие телефоны */
+@media (max-width: 400px) {
+  .card-envelope { width: 260px; }
+  .card-env-wrapper { min-height: 115px; }
+  .card-env-body { min-height: 115px; }
+  .card-env-pocket { min-height: 115px; }
+  .card-env-flap { height: 70px; }
+
+  .greeting-svg { max-width: 250px; }
+  #greeting-text { font-size: 2rem; }
+  #greeting-name { font-size: 1.1rem; }
+  .hero-flowers { gap: 1.2rem; }
+  .flower__stem--1 { height: 100px; }
+  .flower__stem--2 { height: 130px; }
+  .flower__stem--3 { height: 95px; }
+  .flower__bloom--1 svg { width: 50px; height: 50px; }
+  .flower__bloom--2 svg { width: 62px; height: 62px; }
+  .flower__bloom--3 svg { width: 48px; height: 54px; }
+
+  .story-env-wrapper { max-width: 200px; min-height: 72px; }
+  .story-env-body { min-height: 72px; }
+  .story-envelope:not(.note-out) .story-env-body { min-height: 72px; }
+  .story-env-pocket { min-height: 72px; }
+  .story-env-flap { height: 44px; }
+  .story-note { padding: 0.7rem 0.85rem 0.85rem; }
+  .story-note .story-photo { width: 42px; height: 52px; }
+  .story-note .story-text { font-size: 0.85rem; }
+  .story-hint { font-size: 0.75rem; }
+}
