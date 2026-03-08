@@ -76,11 +76,11 @@ document.addEventListener('DOMContentLoaded', () => {
     initParallax();
   }
 
-  // Сердце из текста «Я люблю тебя»
+  // Сердце из текста «Мама, люблю тебя»
   function createLoveHeart() {
     const container = document.getElementById('love-heart');
     if (!container) return;
-    const phrase = 'Я люблю тебя ';
+    const phrase = 'Мама, люблю тебя ';
     const count = 24;
     for (let i = 0; i < count; i++) {
       const t = (i / count) * Math.PI * 2;
@@ -230,13 +230,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const storyWrapper = storyEnv?.querySelector('.story-env-wrapper');
     const storyPullBtn = document.getElementById('story-pull-btn');
 
-    if (storyWrapper) {
-      storyWrapper.addEventListener('click', () => {
-        if (!storyEnv.classList.contains('flap-open')) {
-          storyEnv.classList.add('flap-open');
-        }
-      });
-    }
+    const openStoryFlap = () => {
+      if (storyEnv && !storyEnv.classList.contains('flap-open')) {
+        storyEnv.classList.add('flap-open');
+      }
+    };
+    if (storyWrapper) storyWrapper.addEventListener('click', openStoryFlap);
+    document.getElementById('story-hint')?.addEventListener('click', openStoryFlap);
     if (storyPullBtn) {
       storyPullBtn.addEventListener('click', (e) => {
         e.stopPropagation();
@@ -290,7 +290,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const heartsContainer = document.getElementById('congrats-hearts');
     const confettiContainer = document.getElementById('congrats-confetti');
     const msgDisplay = document.getElementById('congrats-msg-display');
-    const congratsTexts = ['Счастья, здоровья и любви!', 'Пусть сбываются все мечты!', 'Вдохновения и новых побед!', 'Тепла, уюта и прекрасных моментов!', 'Ты — самая лучшая!', 'С 8 марта, любимая!'];
+    const congratsTexts = ['Счастья, здоровья и любви!', 'Пусть сбываются все мечты!', 'Тепла, уюта и прекрасных моментов!', 'Ты — самая лучшая мама!', 'Мы тебя очень любим!', 'С 8 марта, мамочка!'];
     const closeBtn = document.querySelector('.close-modal');
 
     if (!btn || !modal) return;
@@ -357,11 +357,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // ===== ИНТЕРАКТИВНОСТЬ — кликабельные элементы =====
   function spawnHearts(x, y, count = 5) {
-    const container = document.getElementById('petals') || document.body;
     const heartSvg = '<svg viewBox="0 0 24 24"><path fill="#ea80b0" d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>';
+    const colors = ['#ea80b0', '#e8b4bc', '#f5c4d8', '#d4a5a5', '#fce4ec'];
     for (let i = 0; i < count; i++) {
       const h = document.createElement('div');
       h.innerHTML = heartSvg;
+      h.querySelector('path')?.setAttribute('fill', colors[i % colors.length]);
       h.style.cssText = `position:fixed;width:${20 + Math.random() * 16}px;height:${20 + Math.random() * 16}px;left:${x}px;top:${y}px;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);`;
       document.body.appendChild(h);
       gsap.to(h, {
@@ -376,7 +377,44 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
+  // Лайтбокс для фото
+  function initPhotoLightbox() {
+    const lightbox = document.getElementById('photo-lightbox');
+    const lightboxImg = lightbox?.querySelector('.photo-lightbox-img');
+    const lightboxBg = lightbox?.querySelector('.photo-lightbox-bg');
+    const lightboxClose = lightbox?.querySelector('.photo-lightbox-close');
+
+    function openLightbox(src) {
+      if (!lightbox || !lightboxImg) return;
+      lightboxImg.src = src;
+      lightbox.classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeLightbox() {
+      if (!lightbox) return;
+      lightbox.classList.add('hidden');
+      document.body.style.overflow = '';
+    }
+
+    lightboxBg?.addEventListener('click', closeLightbox);
+    lightboxClose?.addEventListener('click', closeLightbox);
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeLightbox(); });
+
+    document.querySelectorAll('[data-click-photo]').forEach(el => {
+      el.addEventListener('click', (e) => {
+        const img = el.querySelector('img');
+        if (img?.src) {
+          e.stopPropagation();
+          spawnHearts(e.clientX, e.clientY, 4);
+          openLightbox(img.src);
+        }
+      });
+    });
+  }
+
   function initInteractivity() {
+    initPhotoLightbox();
+
     // Цветы — клик = сердечки
     document.querySelectorAll('[data-click-flower]').forEach(el => {
       el.addEventListener('click', (e) => {
@@ -385,27 +423,39 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     });
 
-    // Комплименты — клик = сердечки
+    // Комплименты — клик = сердечки + лёгкая анимация
     document.querySelectorAll('[data-click-card]').forEach(el => {
       el.addEventListener('click', (e) => {
         const rect = el.getBoundingClientRect();
         spawnHearts(rect.left + rect.width / 2, rect.top + rect.height / 2, 4);
+        gsap.to(el, { scale: 1.03, duration: 0.15, yoyo: true, repeat: 1 });
       });
     });
 
-    // Пожелания — клик = сердечки + анимация
+    // Пожелания — клик = сердечки + анимация; долгое нажатие = ещё больше
     document.querySelectorAll('[data-click-wish]').forEach(el => {
+      let pressTimer;
+      let didLongPress = false;
+      const clearPress = () => { clearTimeout(pressTimer); pressTimer = null; };
+      const startPress = () => {
+        didLongPress = false;
+        pressTimer = setTimeout(() => {
+          didLongPress = true;
+          const rect = el.getBoundingClientRect();
+          spawnHearts(rect.left + rect.width / 2, rect.top + rect.height / 2, 12);
+        }, 600);
+      };
+      el.addEventListener('mousedown', startPress);
+      el.addEventListener('mouseup', clearPress);
+      el.addEventListener('mouseleave', clearPress);
+      el.addEventListener('touchstart', startPress);
+      el.addEventListener('touchend', clearPress);
       el.addEventListener('click', (e) => {
+        clearPress();
+        if (didLongPress) return;
         const rect = el.getBoundingClientRect();
         spawnHearts(rect.left + rect.width / 2, rect.top + rect.height / 2, 5);
         gsap.to(el, { scale: 1.15, duration: 0.2, yoyo: true, repeat: 1 });
-      });
-    });
-
-    // Фото — клик = сердечки
-    document.querySelectorAll('[data-click-photo]').forEach(el => {
-      el.addEventListener('click', (e) => {
-        spawnHearts(e.clientX, e.clientY, 5);
       });
     });
 
@@ -413,9 +463,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const heroArea = document.querySelector('[data-click-hero]');
     if (heroArea) {
       heroArea.style.cursor = 'pointer';
+      let lastTap = 0;
       heroArea.addEventListener('click', (e) => {
         if (!e.target.closest('[data-click-flower]')) {
-          spawnHearts(e.clientX, e.clientY, 4);
+          const now = Date.now();
+          const count = (now - lastTap < 400) ? 12 : 4; // двойной тап = больше сердечек
+          lastTap = now;
+          spawnHearts(e.clientX, e.clientY, count);
         }
       });
     }
@@ -440,6 +494,32 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     }
 
+    // Сердце «Я люблю тебя» — клик = много сердечек
+    const loveHeart = document.getElementById('love-heart');
+    if (loveHeart) {
+      loveHeart.style.cursor = 'pointer';
+      loveHeart.addEventListener('click', (e) => {
+        const rect = loveHeart.getBoundingClientRect();
+        spawnHearts(rect.left + rect.width / 2, rect.top + rect.height / 2, 15);
+        gsap.to(loveHeart, { scale: 1.1, duration: 0.2, yoyo: true, repeat: 1 });
+      });
+    }
+
+    // Заголовки секций — клик = сердечки
+    document.querySelectorAll('[data-click-title]').forEach(el => {
+      el.style.cursor = 'pointer';
+      el.addEventListener('click', (e) => {
+        const rect = el.getBoundingClientRect();
+        spawnHearts(rect.left + rect.width / 2, rect.top + rect.height / 2, 4);
+        gsap.to(el, { scale: 1.02, duration: 0.3, yoyo: true, repeat: 1 });
+      });
+    });
+
+    // «С любовью» — клик = сердечки
+    document.querySelector('[data-click-love]')?.addEventListener('click', (e) => {
+      const rect = e.target.getBoundingClientRect();
+      spawnHearts(rect.left + rect.width / 2, rect.top + rect.height / 2, 10);
+    });
   }
 
   // Конверт на начальном экране — hover
